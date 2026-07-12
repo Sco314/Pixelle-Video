@@ -38,23 +38,23 @@ class APIAssetAnalysisService:
         "dashscope": "DashScope",
     }
 
-    IMAGE_PROMPT = """请分析这张素材图片，用中文给出适合短视频脚本创作的简洁描述。
+    IMAGE_PROMPT = """Please analyze this asset image and provide a concise description in English suitable for short-video script creation.
 
-请重点说明：
-1. 画面主体、人物/商品/场景
-2. 可用于营销或叙事的关键信息
-3. 画面风格、氛围、颜色和构图
+Please focus on:
+1. The main subject, people/products/scene
+2. Key information usable for marketing or storytelling
+3. The visual style, mood, colors, and composition
 
-输出 2-5 句话，不要编造图片中不存在的信息。"""
+Output 2-5 sentences. Do not fabricate information that is not present in the image."""
 
-    VIDEO_PROMPT = """请分析这个上传的视频素材，用中文概括视频内容。
+    VIDEO_PROMPT = """Please analyze this uploaded video asset and summarize its content in English.
 
-请重点说明：
-1. 视频中的主体、场景和动作变化
-2. 可用于短视频脚本的卖点或叙事信息
-3. 整体风格、节奏和氛围
+Please focus on:
+1. The main subjects, scenes, and action changes in the video
+2. Selling points or narrative information usable for a short-video script
+3. The overall style, pacing, and mood
 
-输出 3-6 句话，不要编造关键帧中看不到的信息。"""
+Output 3-6 sentences. Do not fabricate information that cannot be seen in the key frames."""
 
     def __init__(self, config: dict, core=None):
         self.config = config

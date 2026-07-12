@@ -1,8 +1,8 @@
 """
-统一视频生成客户端
-根据 model 名称自动路由到对应后端：
+Unified video generation client
+Automatically routes to the appropriate backend based on the model name:
   - wan*      → DashscopeVideoClient (DashScope VideoSynthesis)
-  - kling*    → KlingVideoClient (可灵 AI)
+  - kling*    → KlingVideoClient (Kling AI)
 """
 
 import os
@@ -24,8 +24,8 @@ logger = logging.getLogger(__name__)
 
 class VideoClient:
     """
-    统一视频生成客户端
-    参照 ImageClient 模式，按模型名路由到不同后端
+    Unified video generation client
+    Follows the ImageClient pattern, routing to different backends by model name
     """
 
     def __init__(
@@ -120,22 +120,22 @@ class VideoClient:
         audio: Optional[bool] = None,
     ) -> str:
         """
-        生成视频
+        Generate a video
 
         Args:
-            prompt: 视频描述提示词
-            image_path: 输入图片本地路径；DashScope wan2.7 视频续写可为空并使用 first_clip_path
-            save_path: 输出视频保存路径
-            model: 模型名，决定使用哪个后端
-            duration: 视频时长（秒）
-            shot_type: 镜头类型 "single" / "multi"
+            prompt: video description prompt
+            image_path: local path of the input image; may be empty for DashScope wan2.7 video continuation, which uses first_clip_path
+            save_path: output video save path
+            model: model name, which determines the backend to use
+            duration: video length (seconds)
+            shot_type: shot type "single" / "multi"
 
         Returns:
-            video_url: 远端视频 URL
+            video_url: remote video URL
 
         Raises:
-            FileNotFoundError: 输入图片不存在
-            RuntimeError: 生成或下载失败
+            FileNotFoundError: input image does not exist
+            RuntimeError: generation or download failed
         """
         if not model:
             model = "wan2.7-i2v"
@@ -144,7 +144,7 @@ class VideoClient:
             print("---- VIDEO GENERATION REQUEST ----")
             print(f"Prompt: {prompt}")
             if image_path and str(image_path).startswith("data:"):
-                print(f"Image: [Base64图片]")
+                print(f"Image: [Base64 image]")
             else:
                 print(f"Image: {image_path}")
             print(f"Model: {model}")
@@ -226,7 +226,7 @@ class VideoClient:
                 audio,
             )
         else:
-            raise ValueError(f"未知的视频生成模型: {model}")
+            raise ValueError(f"Unknown video generation model: {model}")
 
     def _generate_wan(
         self,
@@ -251,8 +251,8 @@ class VideoClient:
         seed: Optional[int],
         audio: Optional[bool],
     ) -> str:
-        """通过万象模型生成视频"""
-        logger.info(f"VideoClient: 路由至万象 model={model}")
+        """Generate a video via a Wanxiang model"""
+        logger.info(f"VideoClient: routing to Wanxiang model={model}")
         return self.Dashscope_client.generate_video(
             prompt=prompt,
             image_path=image_path,
@@ -289,8 +289,8 @@ class VideoClient:
         negative_prompt: str = "",
         video_ratio: str = "16:9",
     ) -> str:
-        """通过可灵模型生成视频"""
-        logger.info(f"VideoClient: 路由至可灵 model={model}")
+        """Generate a video via a Kling model"""
+        logger.info(f"VideoClient: routing to Kling model={model}")
         return self.kling_client.generate_video(
             prompt=prompt,
             image_path=image_path,
@@ -317,8 +317,8 @@ class VideoClient:
         watermark: Optional[bool] = None,
         generate_audio: Optional[bool] = None,
     ) -> str:
-        """通过 Seedance 模型生成视频"""
-        logger.info(f"VideoClient: 路由至 Seedance model={model}")
+        """Generate a video via a Seedance model"""
+        logger.info(f"VideoClient: routing to Seedance model={model}")
         return self.seedance_client.generate_video(
             prompt=prompt,
             image_path=image_path,
