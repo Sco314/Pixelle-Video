@@ -600,16 +600,16 @@ class APIProviderMediaService:
             return prompt
 
         rewrite_instruction = f"""
-请将下面的视频生成提示词改写为更中性、安全、适合公开视频生成模型审核的画面描述。
+Please rewrite the following video generation prompt into a more neutral, safe scene description that is suitable for the content review of public video generation models.
 
-要求：
-1. 保留原本的积极含义、画面主题和视觉风格。
-2. 去掉可能触发审核的暴力、危险、恐惧、政治、成人、歧视、极端情绪、自伤、违法、攻击性表达。
-3. 不要提及“审核”“违规”“敏感词”等元信息。
-4. 只输出改写后的提示词，不要解释。
-5. 输出优先使用英文，画面描述要具体、平和、正向。
+Requirements:
+1. Preserve the original positive meaning, visual subject, and visual style.
+2. Remove any violent, dangerous, fearful, political, adult, discriminatory, extreme-emotion, self-harm, illegal, or aggressive expressions that may trigger content review.
+3. Do not mention meta information such as "review", "violation", or "sensitive words".
+4. Output only the rewritten prompt, with no explanation.
+5. Output in English by preference; the scene description should be specific, calm, and positive.
 
-原提示词：
+Original prompt:
 {prompt}
 """.strip()
 
@@ -638,6 +638,8 @@ class APIProviderMediaService:
             cleaned = cleaned.strip("`").strip()
             if cleaned.lower().startswith(("text", "prompt", "english")):
                 cleaned = cleaned.split("\n", 1)[-1].strip()
+        # Chinese prefixes ("Rewritten prompt:", "Rewritten:") are matched against
+        # the raw LLM output and stripped, so they are kept as-is for logic matching.
         for prefix in ("改写后的提示词：", "改写后：", "Prompt:", "Rewritten prompt:"):
             if cleaned.startswith(prefix):
                 cleaned = cleaned[len(prefix):].strip()
@@ -646,6 +648,10 @@ class APIProviderMediaService:
     def _fallback_neutralize_prompt(self, prompt: str) -> str:
         """Conservative fallback if the configured LLM is unavailable."""
         sanitized = prompt
+        # Substitutions of Chinese sensitive words with neutral ones, matched against
+        # Chinese prompt text via str.replace, so keys/values are kept in Chinese.
+        # (afraid->calm, fear->contemplative, danger->unknown, break free->move toward,
+        #  collapse->adjust, oppression->pressure, attack->interaction, blood->red, death->parting)
         replacements = {
             "害怕": "平静",
             "恐惧": "沉思",

@@ -22,7 +22,7 @@
   },
   "3": {
     "inputs": {
-      "value": "床前明月光，疑是地上霜。"
+      "value": "Before my bed the bright moonlight, I wonder if it's frost upon the ground."
     },
     "class_type": "PrimitiveStringMultiline",
     "_meta": {
